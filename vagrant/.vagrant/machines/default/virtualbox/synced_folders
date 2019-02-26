@@ -1,0 +1,1 @@
+{"virtualbox":{"/home/trinity/shared":{"create":true,"owner":"trinity","group":"trinity","guestpath":"/home/trinity/shared","hostpath":"/Users/matthewclark/Documents/GitHub/vagrant/shared","disabled":false,"__vagrantfile":true},"/vagrant":{"guestpath":"/vagrant","hostpath":"/Users/matthewclark/Documents/GitHub/vagrant","disabled":false,"__vagrantfile":true}}}

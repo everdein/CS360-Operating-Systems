@@ -1,0 +1,109 @@
+= `Vagrantfile` for ops-class.org
+
+This boots a VirtualBox VM containing a development environment that you can
+use to complete the https://www.ops-class.org[`ops-class.org`] programming
+assignments.
+//
+Vagrant is a good option for Mac and Windows users.
+//
+If you already have Ubuntu installed, you can
+//
+https://launchpad.net/~ops-class/+archive/ubuntu/os161-toolchain[add our PPA]
+//
+and install the toolchain natively using `apt-get`.
+
+== Installation
+
+. (On Windows) Download https://git-scm.com/download/[Git for Windows].
+//
+This includes a `bash` shell which you should use in lieu of the terrible
+Windows shell.
+//
+. (Required) If you already have https://www.virtualbox.org/[VirtualBox]
+installed, upgrade to the latest version.
+//
+. (Required) https://docs.vagrantup.com/v2/installation/[Install Vagrant]
+//
+. (Suggested) Install two Vagrant plugins:
+//
+.. `vagrant plugin install vagrant-vbguest`.
+//
+This ensure that your VirtualBox Guest Additions are up to date.
+//
+.. `vagrant plugin install vagrant-timezone`.
+//
+This synchronizes time between your VM guest and host.
+
+Note that these plugins may be required to get certain Windows systems to
+work.
+
+== Usage
+
+[source,bash]
+----
+vagrant up
+----
+
+== Configuration
+
+* The default user and hostname is `trinity@zion`.
+//
+* The OS/161 toolchain is installed from the
+https://launchpad.net/~ops-class/+archive/ubuntu/os161-toolchain[ops-class
+OS/161 toolchain PPA].
+//
+* An up-to-date version of Git is also preinstalled.
+//
+* The default machine configuration is fairly lightweight.
+//
+You may want to beef it up a bit.
+//
+Or not.
+//
+`sys161` is pretty lightweight itself.
+//
+* You are encouraged virtual machine to your liking--either by editing the
+`Vagrantfile` or by modifying the machine directly.
+//
+
+== Known Problems and Workarounds for Windows
+
+=== Missing `MSVCR100.dll`
+If your `vagrant up` failed with empty error message like:
+
+image::http://i.imgur.com/75IcjsN.png[GitHub mascot]
+
+It's probably because your Windows OS is missing the `MSVCR100.dll` file.
+
+*Solution:*
+
+1. Download `MSVCR100.dll` from http://fix4dll.com/msvcr100_dll based on your OS.
+
+1. Copy downloaded `MSVCR100.dll` to `C:\Windows\System32\` or `C:\Windows\SysWOW64\` based on your System version 32-bit/64-bit.
+
+Video help can be found: https://www.youtube.com/watch?v=6GZH_zObpmg
+
+
+=== SSH Connection Issues in Windows Command Prompt
+
+*Symptom:* `vagrant ssh` hangs while connecting.
+
+*Solution:* Vagrant cannot connect over ssh using Windows Command Prompt.  Please use Git Bash or Cygwin instead.
+
+
+=== Windows Virtualization Issues
+
+*Symptom:*  `vagrant up` Hangs While Connecting
+
+*Solution:*
+
+1. Make sure virtualization is enabled in your BIOS.
+
+2. If Hyper-V is enabled, disable it. Vagrant cannot coexist with Hyper-V.
+
+=== `bmake` fails with symbolic link errors
+
+*Symptom:* `ln: failed to create symbolic link ...`
+
+*Solution:* Windows requires users to have special privileges for creating symbolic links.
+Follow instructions listed https://discourse.ops-class.org/t/errors-with-vagrant-and-windows-machines/132/7?u=gurupras[here].
