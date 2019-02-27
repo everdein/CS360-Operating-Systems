@@ -1,8 +1,8 @@
-import java.util.Random;
-
 // Matthew Clark
 // CS360 - Operating Systems
-// Assignment 3: Problem 1
+// Assignment 2: Problem 1
+
+import java.util.Random;
 
 public class Producer extends Thread
 {
@@ -18,7 +18,14 @@ public class Producer extends Thread
         {
             Random r = new Random();
             int number = r.nextInt(10);
-            dataStore.producer(number);
+            try 
+            {
+                dataStore.produce(number);
+            }
+            catch (InterruptedException e) 
+            {
+                e.printStackTrace();
+            }
         }
     }
 }

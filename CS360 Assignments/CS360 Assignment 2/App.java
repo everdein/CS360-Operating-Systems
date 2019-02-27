@@ -1,6 +1,6 @@
 // Matthew Clark
 // CS360 - Operating Systems
-// Assignment 3: Problem 1
+// Assignment 2: Problem 1
 
 public class App
 {

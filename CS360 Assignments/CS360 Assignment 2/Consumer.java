@@ -1,6 +1,6 @@
 // Matthew Clark
 // CS360 - Operating Systems
-// Assignment 3: Problem 1
+// Assignment 2: Problem 1
 
 public class Consumer extends Thread
 {
@@ -14,7 +14,14 @@ public class Consumer extends Thread
     {
         while(true)
         {
-            dataStore.consumer();
+            try 
+            {
+                dataStore.consume();                
+            }
+            catch (InterruptedException e) 
+            {
+                e.printStackTrace();
+            }
         }
     }
 }
