@@ -18,14 +18,7 @@ public class Producer extends Thread
         {
             Random r = new Random();
             int number = r.nextInt(10);
-            try 
-            {
-                dataStore.produce(number);
-            }
-            catch (InterruptedException e) 
-            {
-                e.printStackTrace();
-            }
+            dataStore.produce(number);
         }
     }
 }

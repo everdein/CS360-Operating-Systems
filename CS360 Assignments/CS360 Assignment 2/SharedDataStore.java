@@ -2,14 +2,15 @@
 // CS360 - Operating Systems
 // Assignment 2: Problem 1
 
-import java.util.Stack;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.Queue;
+import java.util.LinkedList;
 
 public class SharedDataStore 
 {
-    private Stack<Integer> stack = new Stack<>();
+    private Queue<Integer> queue = new LinkedList<>();
     private int maxSize;
     private Lock lock = new ReentrantLock();
     private Condition aboveZero = lock.newCondition();
@@ -18,32 +19,46 @@ public class SharedDataStore
     public SharedDataStore(int maxSize) 
     {
         this.maxSize = maxSize;
-        stack.setSize(maxSize);
     }
 
-    public void produce(int n) throws InterruptedException 
+    public void produce(int n) 
     {
         lock.lock();
-        while(stack.size() >= maxSize) 
+        while(queue.size() >= maxSize) 
         {
-            System.out.println("Producer wants to produce, but data store is full.");
-            belowMax.await();
+            try 
+            {
+                System.out.println("Producer wants to produce, but data store is full.");
+                belowMax.await();
+            } 
+            catch (InterruptedException e) 
+            {
+                e.printStackTrace();
+            }
+
         }
-        System.out.println("Producer: a new object is added: " + stack.push(n));
+        System.out.println("Producer: a new object is added: " + queue.add(n));
         System.out.println("Producer: Signalling that it is not empty.");
         aboveZero.signal();
         lock.unlock();
     }
 
-    public void consume() throws InterruptedException 
+    public void consume() 
     {
         lock.lock();
-        while (stack.isEmpty()) 
+        while (queue.isEmpty()) 
         {
-            System.out.println("Consumer wants to consume, but it is empty.");
-            aboveZero.await();
+            try 
+            {
+                System.out.println("Consumer wants to consume, but it is empty.");
+                aboveZero.await();
+            } 
+            catch (InterruptedException e) 
+            {
+                e.printStackTrace();
+            }
         }
-        System.out.println("Consumer: an object is removed: " + stack.pop());
+        System.out.println("Consumer: an object is removed: " + queue.remove());
         System.out.println("Consumer: Signalling that it is not full.");
         belowMax.signal();
         lock.unlock();

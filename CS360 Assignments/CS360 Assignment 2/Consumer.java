@@ -14,14 +14,7 @@ public class Consumer extends Thread
     {
         while(true)
         {
-            try 
-            {
-                dataStore.consume();                
-            }
-            catch (InterruptedException e) 
-            {
-                e.printStackTrace();
-            }
+           dataStore.consume();                
         }
     }
 }
