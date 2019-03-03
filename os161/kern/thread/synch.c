@@ -39,6 +39,7 @@
 #include <thread.h>
 #include <current.h>
 #include <synch.h>
+#include <spl.h>
 
 ////////////////////////////////////////////////////////////
 //
@@ -164,7 +165,9 @@ lock_create(const char *name)
 		return NULL;
 	}
 	spinlock_init(&lock->lk_lock);
+	lock->flag = 0;
 	lock->lk_owner = NULL;
+	
 	return lock;
 }
 
@@ -172,7 +175,6 @@ void
 lock_destroy(struct lock *lock)
 {
 	KASSERT(lock != NULL);
-    KASSERT(lock->lk_owner == NULL);
 
 	// add stuff here as needed
 	spinlock_cleanup(&lock->lk_lock);
@@ -195,18 +197,21 @@ lock_acquire(struct lock *lock)
 	//HANGMAN_ACQUIRE(&curthread->t_hangman, &lock->lk_hangman);
 
 	KASSERT(lock != NULL);
-	KASSERT(!(lock_do_i_hold(lock)));
 	KASSERT(curthread->t_in_interrupt == false);
+	KASSERT(!(lock_do_i_hold(lock)));
 	spinlock_acquire(&lock->lk_lock);
+	HANGMAN_WAIT(&curthread->t_hangman, &lock->lk_hangman);
 	while(lock->lk_owner != NULL)
 	{
-		wchan_lock(lock->lk_wchan);
-		spinlock_release(&lock->lk_lock);
 		wchan_sleep(lock->lk_wchan, &lock->lk_lock);
-		spinlock_acquire(&lock->lk_lock);
 	}
+	int spl = splhigh();
+	KASSERT(lock->lk_owner == NULL);
 	lock->lk_owner = curthread;
+	lock->flag = true;
+	HANGMAN_ACQUIRE(&curthread->t_hangman, &lock->lk_hangman);
 	spinlock_release(&lock->lk_lock);
+	splx(spl);
 }
 
 void
@@ -218,12 +223,17 @@ lock_release(struct lock *lock)
 	// Write this
 
 	// (void)lock;  // suppress warning until code gets written
-    KASSERT(lock_do_i_hold(lock));
-
+    KASSERT(lock != NULL);
+	KASSERT(lock->flag);
+	KASSERT(lock_do_i_hold(lock));
 	spinlock_acquire(&lock->lk_lock);
-    lock->lk_owner=NULL;
+	int spl = splhigh();
+    lock->lk_owner = NULL;
+	lock->flag = false;
     wchan_wakeone(lock->lk_wchan, &lock->lk_lock);
 	spinlock_release(&lock->lk_lock);
+	splx(spl);
+
 }
 
 bool
@@ -234,20 +244,17 @@ lock_do_i_hold(struct lock *lock)
 	// (void)lock;  // suppress warning until code gets written
 
 	// return true; // dummy until code gets written
+	KASSERT(curthread != NULL);
+	if(!lock->flag)
+	{
+		return 0;
+	}
+	if(lock->lk_owner == curthread)
+	{
+		return 1; 
+	}
+	return 0;
 
-	// if(lock->lk_owner == curthread)
-	// {
-	// 	return true; 
-	// }
-	// return false;
-	bool ret;
-	DEBUGASSERT(lock != NULL);
-
-	spinlock_acquire(&lock->lk_lock);
-	ret = (lock->lk_holder == curthread);
-	spinlock_release(&lock->lk_lock);
-
-	return ret;
 }
 
 ////////////////////////////////////////////////////////////
