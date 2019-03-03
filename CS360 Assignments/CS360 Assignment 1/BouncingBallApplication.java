@@ -1,13 +1,13 @@
-// Matthew Clark
-// CS360 - Operating Systems
-// Assignment 1 - Multithreaded Balls
+// Author: Matthew Clark
+// Date: 03/03/2019
+// Description: CS360 - Operating Systems | Assignment 1 - Multithreaded Balls
 
 // Imports.
 import java.awt.Color;
 import java.util.Random;
 import javax.swing.*;
 // Creates BallRunnable class and implements Runnable.
-public class BallRunnable implements Runnable
+public class BouncingBallApplication implements Runnable
 {
     // Attributes.
     private Random rand = new Random();
@@ -21,7 +21,7 @@ public class BallRunnable implements Runnable
     private BallPanel BallPanel;
     private JFrame JFrame;
     // Method BallRunnable declares attributes.
-    public BallRunnable(int x, int y, BallPanel BallPanel, JFrame JFrame)
+    public BouncingBallApplication(int x, int y, BallPanel BallPanel, JFrame JFrame)
     {
         // Declarations.
         this.x = x;
@@ -38,8 +38,6 @@ public class BallRunnable implements Runnable
     @Override
     public void run()
     {
-        // Gets ball.
-        BallPanel.getBall(this);
         // Prints attributes of each ball created.
         System.out.println(this.x + ", " + this.y + ", " + this.diameter + ", " + this.speed + ", " + this.color + ", " + 
                            this.JFrame.getHeight() + ", " + this.JFrame.getWidth() + ", " + this.xVelocity + ", " + 
@@ -49,21 +47,25 @@ public class BallRunnable implements Runnable
         while (true) {
             // When the ball is going off the screen in the x and y negative
             // direction both xVelocity and yVelocity to a random positive number.
-            if (this.x <= 0) {
+            if (this.x <= 0) 
+            {
                 this.xVelocity = rand.nextInt(10);
             }
-            if (this.y <= 0) {
+            if (this.y <= 0) 
+            {
                 this.yVelocity = rand.nextInt(10);
             }
             // When the ball is going off the screen in the x direction both xVelocity 
             // and yVelocity are randomized and the xVelocity is reversed.
-            if (this.x >= 500 - 20) {
+            if (this.x >= 500 - 20) 
+            {
                 this.xVelocity = rand.nextInt(10);
                 this.xVelocity = this.xVelocity * (-1);
             }
             // When the ball is going off the screen in the y direction both xVelocity 
             // and yVelocity are randomized and the yVelocity is reversed.
-            if (this.y >= 500 - 45) {
+            if (this.y >= 500 - 45) 
+            {
                 this.yVelocity = rand.nextInt(10);
                 this.yVelocity = this.yVelocity * (-1);
             }

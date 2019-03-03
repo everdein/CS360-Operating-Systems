@@ -1,6 +1,7 @@
-// Matthew Clark
-// CS360 - Operating Systems
-// Assignment 1 - Multithreaded Balls
+// Author: Matthew Clark
+// Date: 03/03/2019
+// Description: CS360 - Operating Systems | Assignment 1 - Multithreaded Balls
+
 
 // Imports.
 import java.awt.Graphics;
@@ -10,7 +11,7 @@ import javax.swing.JPanel;
 public class BallPanel extends JPanel
 {
     // This is where ball objects are stored.
-    private ArrayList<BallRunnable> ballArrayList = new ArrayList<>();
+    private ArrayList<BouncingBallApplication> ballArrayList = new ArrayList<>();
     // Paint method paints the balls.
     @Override
     public void paint(Graphics g) 
@@ -25,7 +26,7 @@ public class BallPanel extends JPanel
         }
     }
     // Adds ball object to array.
-    public void getBall(BallRunnable ball)
+    public void getBall(BouncingBallApplication ball)
     {
         ballArrayList.add(ball);
     }
